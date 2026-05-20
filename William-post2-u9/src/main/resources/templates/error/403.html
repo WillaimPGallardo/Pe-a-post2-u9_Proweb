@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Acceso Denegado</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+    <div class="container">
+        <h1 style="color:#c0392b">Acceso Denegado (403)</h1>
+
+        <div class="alert alert-error">
+            El usuario <strong sec:authentication="name"></strong>
+            no tiene permisos para acceder a este recurso.
+        </div>
+
+        <p>
+            Tu rol actual es:
+            <strong sec:authentication="principal.authorities"></strong>
+        </p>
+
+        <p>
+            Si crees que esto es un error, contacta al administrador del sistema.
+        </p>
+
+        <hr>
+
+        <a th:href="@{/dashboard}" class="btn btn-primary">← Volver al Dashboard</a>
+
+        <form th:action="@{/logout}" method="post" style="display:inline; margin-left:10px;">
+            <button type="submit" class="btn btn-danger">Cerrar Sesión</button>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+    <div class="container">
+        <h1>Dashboard</h1>
+        <p>Bienvenido, <strong><span sec:authentication="name"></span></strong></p>
+        <p>Roles: <span sec:authentication="principal.authorities"></span></p>
+
+        <hr>
+
+        <!--
+            Verificacion activa de XSS (Post-Contenido 2 - Paso 3)
+            ---------------------------------------------------------------
+            th:text ESCAPA automaticamente el contenido. Si el nombre del
+            usuario es "<script>alert('XSS')</script>", el navegador
+            mostrara el texto literal y NO ejecutara el script.
+
+            NUNCA usar th:utext con datos provenientes del usuario:
+            <p th:utext="${nombrePerfil}"></p>  <-- VULNERABLE A XSS
+        -->
+        <div class="alert alert-info">
+            <strong>Nombre de perfil:</strong>
+            <span th:text="${nombrePerfil}"></span>
+        </div>
+
+        <hr>
+
+        <!-- Solo visible para ADMIN -->
+        <div sec:authorize="hasRole('ADMIN')">
+            <h2>Sección Administrador</h2>
+            <a th:href="@{/admin}" class="btn btn-primary">Panel de Administración</a>
+        </div>
+
+        <!-- Solo visible para USER -->
+        <div sec:authorize="hasRole('USER')">
+            <h2>Sección Usuario</h2>
+            <p>Acceso de usuario estándar.</p>
+            <!-- Boton para probar @PreAuthorize: USER no puede listar todos -->
+            <a th:href="@{/probar-listar}" class="btn btn-primary">
+                Probar acceso a listar usuarios (debe dar 403)
+            </a>
+        </div>
+
+        <hr>
+
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="btn btn-danger">Cerrar Sesión</button>
+        </form>
+    </div>
+</body>
+</html>
